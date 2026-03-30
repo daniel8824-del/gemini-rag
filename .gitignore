@@ -1,0 +1,7 @@
+.api_key
+.state.json
+docs/*
+!docs/.gitkeep
+__pycache__/
+*.pyc
+.venv/

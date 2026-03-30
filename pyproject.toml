@@ -1,0 +1,11 @@
+[project]
+name = "gemini-rag"
+version = "0.1.0"
+description = "Gemini File Search RAG - 문서 업로드 후 AI 챗봇으로 활용"
+requires-python = ">=3.10"
+dependencies = [
+    "google-genai",
+]
+
+[project.scripts]
+gemini-rag = "main:main"
