@@ -9,7 +9,6 @@ import sys
 import time
 import json
 from pathlib import Path
-from datetime import date
 
 try:
     from google import genai
@@ -24,10 +23,6 @@ DOCS_DIR = BASE_DIR / "docs"
 KEY_FILE = BASE_DIR / ".api_key"
 STATE_FILE = BASE_DIR / ".state.json"
 
-# RAG 설정
-CHUNK_MAX_TOKENS = 1000
-CHUNK_OVERLAP_TOKENS = 100
-CHAT_TEMPERATURE = 0.2
 
 SUPPORTED_EXTENSIONS = {
     # 문서
@@ -103,19 +98,7 @@ def upload_and_wait(client, store_name, files):
             op = client.file_search_stores.upload_to_file_search_store(
                 file=str(file_path),
                 file_search_store_name=store_name,
-                config={
-                    "display_name": file_path.name,
-                    "chunking_config": {
-                        "white_space_config": {
-                            "max_tokens_per_chunk": CHUNK_MAX_TOKENS,
-                            "max_overlap_tokens": CHUNK_OVERLAP_TOKENS,
-                        }
-                    },
-                    "custom_metadata": [
-                        {"key": "file_type", "string_value": file_path.suffix.lower()},
-                        {"key": "upload_date", "string_value": str(date.today())},
-                    ],
-                },
+                config={"display_name": file_path.name},
             )
             operations.append((file_path.name, op))
             print("OK")
@@ -156,7 +139,6 @@ def chat(client, store_name):
                 model="gemini-2.5-flash",
                 contents=question,
                 config=types.GenerateContentConfig(
-                    temperature=CHAT_TEMPERATURE,
                     tools=[
                         types.Tool(
                             file_search=types.FileSearch(
