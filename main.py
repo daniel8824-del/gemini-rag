@@ -105,6 +105,12 @@ def upload_and_wait(client, store_name, files):
                 file_search_store_name=store_name,
                 config={
                     "display_name": file_path.name,
+                    "chunking_config": {
+                        "white_space_config": {
+                            "max_tokens_per_chunk": CHUNK_MAX_TOKENS,
+                            "max_overlap_tokens": CHUNK_OVERLAP_TOKENS,
+                        }
+                    },
                     "custom_metadata": [
                         {"key": "file_type", "string_value": file_path.suffix.lower()},
                         {"key": "upload_date", "string_value": str(date.today())},
@@ -200,15 +206,7 @@ def main():
             store_display = name if name else "my-rag-store"
             print(f"\n[...] Store 생성 중: {store_display}")
             store = client.file_search_stores.create(
-                config={
-                    "display_name": store_display,
-                    "chunking_config": {
-                        "white_space_config": {
-                            "max_tokens_per_chunk": CHUNK_MAX_TOKENS,
-                            "max_overlap_tokens": CHUNK_OVERLAP_TOKENS,
-                        }
-                    },
-                }
+                config={"display_name": store_display}
             )
             store_name = store.name
             state["store_name"] = store_name
